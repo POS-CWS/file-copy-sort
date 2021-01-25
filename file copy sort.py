@@ -20,12 +20,12 @@ try:
 	O_BINARY = os.O_BINARY
 except:
 	O_BINARY = 0
+
 READ_FLAGS = os.O_RDONLY | O_BINARY
 WRITE_FLAGS = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | O_BINARY
 BUFFER_SIZE = 128 * 1024
 
 # Determine which version of python we are working with, for the copy method.
-# Print warning if using 3
 py2 = True
 if sys.version_info > (3, 0):
 	py2 = False
@@ -48,7 +48,7 @@ def main():
 	sys.exit(app.exec_())
 
 
-# Copies a file. Works quickly in Python 2.
+# Copies a single file. Optimized for python 2
 # Based on code by Michael Burns:
 # https://stackoverflow.com/questions/22078621/python-how-to-copy-files-fast
 def copyfile(src, dst):
@@ -69,7 +69,6 @@ def copyfile(src, dst):
 				os.close(fout)
 			except:
 				pass
-	# This version allows for python 3 compatibility, but is MUCH slower
 	else:
 		shutil.copy2(src, dst)
 
@@ -79,15 +78,13 @@ class Program(QMainWindow):
 	def __init__(self):
 		super(Program, self).__init__()
 
-		# Set a few variables for later
-		# Initialize some values, check for metadata for others
+		# Set a few program-scope variables for later
 		self.working = False
 		self.filesCopied = 0
 		self.filesNotParsed = 0
 		self.filesSkipped = 0
 		self.correctForZulu = 1
 		self.allowOverwrite = False
-		# self.load_metadata()
 		self.months = {'1': "January", '2': 'February', '3': 'March', '4': 'April', '5': 'May', '6': 'June',
 				  '7': 'July', '8': 'August', '9': 'September', '10': 'October', '11': 'November', '12': 'December'}
 		self.cameraList = []
@@ -110,14 +107,16 @@ class Program(QMainWindow):
 		# Also link the functions to keep them in sync, and to verify that the paths exist
 		self.inpathBox = QLineEdit("")
 		self.locLayout.addWidget(self.inpathBox, 1, 0)
-		self.inpathBtn = QPushButton("Select source folder")
+		self.inpathBtn = QPushButton("  Select source folder  ")
+		self.inpathBtn.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
 		self.inpathBtn.clicked.connect(partial(self.select_path, self.inpathBox))
 		self.inpathBox.textChanged.connect(self.verify_paths)
 		self.locLayout.addWidget(self.inpathBtn, 0, 0)
 
 		self.outpathBox = QLineEdit("")
 		self.locLayout.addWidget(self.outpathBox, 1, 1)
-		self.inpathBtn = QPushButton("Select destination folder")
+		self.inpathBtn = QPushButton("  Select destination folder  ")
+		self.inpathBtn.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
 		self.inpathBtn.clicked.connect(partial(self.select_path, self.outpathBox))
 		self.outpathBox.textChanged.connect(self.verify_paths)
 		self.locLayout.addWidget(self.inpathBtn, 0, 1)
@@ -130,10 +129,12 @@ class Program(QMainWindow):
 
 		# Add the button to transfer the files
 		# Initially, this is inactive since we need the user to select inpath/outpath first
-		self.sortBtn = QPushButton("Start copy/sort")
+		self.sortBtn = QPushButton("  Start copy/sort  ")
 		self.sortBtn.setEnabled(False)
 		self.sortBtn.clicked.connect(self.start_copy_sort)
+		self.controlsLayout.addSpacerItem(build_horiz_spacer())
 		self.controlsLayout.addWidget(self.sortBtn)
+		self.controlsLayout.addSpacerItem(build_horiz_spacer())
 
 		# Create "options" menu. Provide options for zulu correction and forced overwrite
 		self.statusBar()
@@ -148,7 +149,7 @@ class Program(QMainWindow):
 		self.toggleOverwriteAction.triggered.connect(self.toggle_overwrite)
 		self.optionsMenu.addAction(self.toggleOverwriteAction)
 
-		#Properly sets text and status tips
+		# Properly sets text and status tips
 		self.update_options_menu_text()
 
 		self.load_camera_list()
@@ -208,40 +209,6 @@ class Program(QMainWindow):
 				self.sortBtn.setEnabled(True)
 			self.sortBtn.setText("Start copy/sort")
 
-	# Reads settings from the last time the program was open.
-	# def load_metadata(self):
-	# 	try:
-	# 		with open("meta.txt", "r") as inFile:
-	# 			for line in inFile:
-	# 				line = line.rstrip()
-	#
-	# 				if line.startswith("Overwrite: "):
-	# 					if re.match("T", line[11:12]):
-	# 						self.allowOverwrite = True
-	# 					else:
-	# 						self.allowOverwrite = False
-	#
-	# 				if line.startswith("Zulu_to_PST: "):
-	# 					if re.match("T", line[13:14]):
-	# 						self.correctForZulu = True
-	# 					else:
-	# 						self.correctForZulu = False
-	#
-	# 		# Add any additional metadata here
-	# 	except IOError:
-	# 		print("Can't read metadata.")
-
-	# Updates the meta file when the program is closed, to enable remembering certain settings
-	# def closeEvent(self, event):
-	# 	with open("meta.txt", "w+") as f:
-	# 		# Remember whether or not we were adjusting for zulu time
-	# 		if self.correctForZulu:
-	# 			f.write("Zulu_to_PST: T\n")
-	# 		else:
-	# 			f.write("Zulu_to_PST: F\n")
-			# DO NOT remember whether we were overwriting.
-			# Overwrite mode should only be used rarely and deliberately.
-
 	def load_camera_list(self):
 		try:
 			with open("camera list.txt", 'r') as infile:
@@ -254,7 +221,7 @@ class Program(QMainWindow):
 			self.statusBar().showMessage("Error loading camera list")
 
 	# A wrapper for copy_sort below, but with surrounding functionality:
-	# read inpath/outpath from gui, reset counts
+	# reads inpath/outpath from gui, resets counts
 	def start_copy_sort(self):
 		self.working = True
 		self.sortBtn.setEnabled(False)
@@ -388,6 +355,19 @@ class Program(QMainWindow):
 							print("error message:\n", sys.exc_info())
 						firstTry = False
 						time.sleep(1)
+
+
+def build_horiz_spacer():
+	if py2:
+		return QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+	return QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+
+
+def build_vert_spacer():
+	if py2:
+		return QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+	return QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+
 
 # --------------------------------------------------
 
