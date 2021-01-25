@@ -1,6 +1,6 @@
 # file copy sort tool
 
-This program is for sorting image files by day, assuming images use the naming format <text>yyyy.mm.dd.hh<text> ('.' can be any character). It could be retooled to sort other data or into other categories by changing how targetPath is created in the copy_folder method
+This program is for sorting image files by day, assuming images use the naming format <text>yyyy.mm.dd.hh<text> ('.' can be any character). It could be retooled to sort other data by changing what information is used to sort the data, or into other categories by changing how targetPath is created, both in the copy_folder method.
 
 Note that any type of file following that date format will be sorted. Any files that it cannot parse in this way will be put in an "unsorted" folder. Note that due to potential for same-named files to overwrite each other, this "unsorted" folder should not be counted on to contain everything in the source folders.
 
@@ -23,7 +23,7 @@ Version 1.3
 * The program will often stop responding for a few minutes when it starts very big folders. This is normal - just let it run. After a while it should start giving update messages
 
 
-### Other notes:
+### Usage options:
 * Overwriting and PST correction can be toggled in the file menu.
    * "PST correction" is used when the files are in UTC time, but want to be sorted according to PST days.
    * "Automatic PST correction" is generally what should be used. This mode accounts for when our camera standard changed from PST to UTC.
