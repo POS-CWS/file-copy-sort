@@ -17,7 +17,7 @@ Copyright (C) 2018-2021 Gregory O'Hagan (GNU v3 licence).
    * Note that if you are running using the terminal, the current terminal path needs to be in this program's folder for the tool to find its config files
 * Select the source and the destination path either by browsing or by typing in the path, then press "Start copy/sort"
 * The source folder is searched recursively (i.e. subfolders too) for all files in it.
-* If the program is closed/terminated for any reason, it can detect where it left off on its own. Simply restart the program, set the same source destination, and it will resume.
+* If the program is closed/terminated for any reason, it can detect where it left off on its own. Simply restart the program, set the same source and destination, and it will resume.
 * For the above reason, never assume the program has finished a copy/sort until you explicitly the message that it has finished.
 * The program will often stop responding for a few minutes when it starts very big folders. This is normal - just let it run. After a while it should start giving update messages
 
@@ -27,3 +27,6 @@ Copyright (C) 2018-2021 Gregory O'Hagan (GNU v3 licence).
    * "Automatic PST correction" is generally what should be used. This mode accounts for when our camera standard changed from PST to UTC.
    * "Overwriting" determines whether it will auto-detect files in the target location
      * If enabled, it will copy everything found, overwriting as necessary. If disabled, it will skip files if it detects these already in the target folder.
+   * The file "camera list.txt" is an optional file that allows images from multiple cameras to be copied and sorted at the same time into their own output folders. Each line of this file corresponds to a unique set of characters that can be found in exclusively in the filenames of the images belonging to one camera to separate.
+	 * Each of these cameras (that have images detected in the source folder) will have their own output folder, named using the key to identify that camera, that sits in the base output folder.
+	 * If you are only using a single camera, erase the entire contents of this file. You may also delete this file, but this will display an error whenever the tool is loaded.

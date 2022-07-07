@@ -7,6 +7,20 @@ import shutil
 
 from functools import partial
 
+
+# Different PyQt loads for py2 and py3
+py2 = True
+if sys.version_info > (3, 0):
+	py2 = False
+	from PyQt5 import QtGui, QtCore, uic, QtWidgets
+	from PyQt5.QtWidgets import *
+	from PyQt5.QtCore import *
+	from PyQt5.QtGui import *
+else:
+	from PyQt4 import QtCore
+	from PyQt4.QtGui import *
+
+
 osWin = False
 if "win" in sys.platform:
 	import ctypes
@@ -25,18 +39,6 @@ READ_FLAGS = os.O_RDONLY | O_BINARY
 WRITE_FLAGS = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | O_BINARY
 BUFFER_SIZE = 128 * 1024
 
-# Determine which version of python we are working with, for the copy method.
-py2 = True
-if sys.version_info > (3, 0):
-	py2 = False
-	from PyQt5 import QtGui, QtCore, uic, QtWidgets
-	from PyQt5.QtWidgets import *
-	from PyQt5.QtCore import *
-	from PyQt5.QtGui import *
-else:
-	from PyQt4 import QtCore
-	from PyQt4.QtGui import *
-
 
 app = None
 
@@ -48,7 +50,7 @@ def main():
 	sys.exit(app.exec_())
 
 
-# Copies a single file. Optimized for python 2
+# Copies a single file. Optimized for python 2 on windows
 # Based on code by Michael Burns:
 # https://stackoverflow.com/questions/22078621/python-how-to-copy-files-fast
 def copyfile(src, dst):
@@ -355,6 +357,9 @@ class Program(QMainWindow):
 							print("error message:\n", sys.exc_info())
 						firstTry = False
 						time.sleep(1)
+
+
+# --------------------------------------------------
 
 
 def build_horiz_spacer():
