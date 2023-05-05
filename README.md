@@ -18,7 +18,7 @@ Copyright (C) 2018-2021 Gregory O'Hagan (GNU v3 licence).
 * Select the source and the destination path either by browsing or by typing in the path, then press "Start copy/sort"
 * The source folder is searched recursively (i.e. subfolders too) for all files in it.
 * If the program is closed/terminated for any reason, it can detect where it left off on its own. Simply restart the program, set the same source and destination, and it will resume.
-* For the above reason, never assume the program has finished a copy/sort until you explicitly the message that it has finished.
+* For the above reason, never assume the program has finished a copy/sort until you explicitly see the message that it has finished.
 * The program will often stop responding for a few minutes when it starts very big folders. This is normal - just let it run. After a while it should start giving update messages
 
 ### Usage options:
